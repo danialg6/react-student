@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState, useContext } from "react";
+import { Context as StudentContext } from "./context/StudentContext";
+
+import Header from "./components/Header";
+import Student from "./components/Student";
 
 function App() {
+  const { state, submit, loadStudents } = useContext(StudentContext);
+
+  const [fullname, setFullname] = useState("");
+
+  useEffect(() => {
+    loadStudents(
+      localStorage.getItem("students")
+        ? JSON.parse(localStorage.getItem("students"))
+        : []
+    );
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {state.fullname ? (
+        <div>
+          <Header />
+          <Student />
+        </div>
+      ) : (
+        <div>
+          <input
+            type="text"
+            name="name"
+            placeholder="fullname"
+            onChange={(event) => {
+              setFullname(event.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              submit(fullname);
+            }}
+          >
+            submit
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 
